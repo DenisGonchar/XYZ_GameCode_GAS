@@ -90,10 +90,10 @@ void AGCPlayerController::SetVisibilityCharacterWidgets(ESlateVisibility SlateVi
 	{
 		PlayerHUDWidget->SetVisibility(SlateVisibility);
 	}
-	// if (IsValid(MainMenuWidget) && MainMenuWidget != nullptr)
-	// {
-	// 	MainMenuWidget->SetVisibility(SlateVisibility);
-	// }
+	//if (IsValid(MainMenuWidget) && MainMenuWidget != nullptr)
+	//{
+	//	MainMenuWidget->SetVisibility(SlateVisibility);
+	//}
 }
 
 void AGCPlayerController::SetVisibilityDroneWidgets(ESlateVisibility SlateVisibility)
@@ -120,9 +120,6 @@ void AGCPlayerController::SetupInputComponent()
 	InputComponent->BindAction("InteractWithZipline", EInputEvent::IE_Pressed, this, &AGCPlayerController::InteractWithZipline);
 	InputComponent->BindAction("WallRun", EInputEvent::IE_Pressed, this, &AGCPlayerController::WallRun);
 	InputComponent->BindAction("Slide", EInputEvent::IE_Pressed, this, &AGCPlayerController::Slide);
-	InputComponent->BindAction("RockClimbing", IE_Pressed, this, &AGCPlayerController::RockClimbing);
-	InputComponent->BindAction("UpMoveClimbing", IE_Pressed, this, &AGCPlayerController::UpMoveClimbing);
-	InputComponent->BindAction("DownMoveClimbing", IE_Pressed, this, &AGCPlayerController::DownMoveClimbing);
 	InputComponent->BindAction("Mantle", EInputEvent::IE_Pressed, this, &AGCPlayerController::Mantle);
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &AGCPlayerController::Jump);
 	InputComponent->BindAction("Crouch",EInputEvent::IE_Pressed, this, &AGCPlayerController::ChangeCrouchState);
@@ -288,30 +285,6 @@ void AGCPlayerController::ChangeProneState()
 	{
 		CachedBaseCharacter->ChangeProneState();
 	
-	}
-}
-
-void AGCPlayerController::RockClimbing()
-{
-	if (CachedBaseCharacter.IsValid())
-	{
-		CachedBaseCharacter->RockClimbing();
-	}
-}
-
-void AGCPlayerController::UpMoveClimbing()
-{
-	if (CachedBaseCharacter.IsValid())
-	{
-		CachedBaseCharacter->UpMoveClimbing();
-	}
-}
-
-void AGCPlayerController::DownMoveClimbing()
-{
-	if (CachedBaseCharacter.IsValid())
-	{
-		CachedBaseCharacter->DownMoveClimbing();
 	}
 }
 

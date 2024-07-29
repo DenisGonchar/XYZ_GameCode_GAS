@@ -66,11 +66,6 @@ private:
 
 	//Prone
 	void ChangeProneState();
-
-	//RockClimbing
-	void RockClimbing();
-	void UpMoveClimbing();
-	void DownMoveClimbing();
 	
 	//Mantle
 	void Mantle();

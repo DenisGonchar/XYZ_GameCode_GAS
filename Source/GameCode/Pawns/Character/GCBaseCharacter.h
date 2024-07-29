@@ -127,15 +127,7 @@ public:
 	virtual void SwimRight(float Value) {};
 	virtual void SwimUp(float Value) {};
 #pragma endregion Swim
-
-#pragma region RockClimbing
-	UFUNCTION(BlueprintCallable)
-	void RockClimbing();
-	void UpMoveClimbing();
-	void DownMoveClimbing();
 	
-#pragma endregion RockClimbing
-
 #pragma region Mantle
 	UFUNCTION(BlueprintCallable)
 	void Mantle(bool bForce = false);

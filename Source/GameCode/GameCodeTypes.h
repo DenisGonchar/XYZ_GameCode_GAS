@@ -5,7 +5,6 @@
 #define ECC_Bullet ECC_GameTraceChannel3
 #define ECC_Melee ECC_GameTraceChannel4
 #define ECC_WallRannable ECC_GameTraceChannel5
-#define ECC_RockClimbing ECC_GameTraceChannel6
 
 const FName SocketFPCamera = FName("CameraSocket");
 const FName SocketCharacterWeapon = FName("CharacterWeaponSocket");

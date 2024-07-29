@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "CharacterMoveComponent.generated.h"
 
-class ALedgePlatform;
+
 class UGCBaseCharacterMovementComponent;
 class AGCBaseCharacter;
 class ULedgeDetectorComponent;
@@ -45,15 +45,6 @@ struct FMantlingSetting
 
 };
 
-UENUM(BlueprintType)
-enum class EMoveRockClimbing : uint8
-{
-	Nome,
-	Up,
-	Down
-	
-};
-
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class GAMECODE_API UCharacterMoveComponent : public UActorComponent
@@ -80,9 +71,6 @@ public:
 
 	bool CanSlide();
 
-	UFUNCTION()
-	void OnRep_InSlide(bool bWasSliding);
-
 	//WallRun
 	void WallRun();
 	bool CanWallRun();
@@ -106,12 +94,8 @@ public:
 	 UFUNCTION()
 	 void OnRep_IsMantlong(bool bWasMantling);
 
-	//RockClimbing
-	void RockClimbing(EMoveRockClimbing Move);
-	void StartRockClimbing();
-	
-	bool CanRockClimbing() const;
-	
+	UFUNCTION()
+	void OnRep_InSlide(bool bWasSliding);
 public:
 	FVector BaseTranslationOffset = FVector::ZeroVector;
 
@@ -128,43 +112,8 @@ public:
 	 UPROPERTY(ReplicatedUsing = OnRep_IsMantlong)
 	 bool bIsMantling;
 
-	//Slide
 	UPROPERTY(ReplicatedUsing= OnRep_InSlide)
 	bool bIsSliding;
-
-	//RockClimbing
-	UPROPERTY()
-	bool bIsRockClimbing;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Character | Movement | Rock Climbing")
-	class UAnimMontage* StartClimbingMontage;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Character | Movement | Rock Climbing")
-	class UAnimMontage* UpClimbingMontage;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Character | Movement | Rock Climbing")
-	class UAnimMontage* DownClimbingMontage;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Character | Movement | Rock Climbing")
-	float UpClimbingMontageTime = 2.0f;	
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Character | Movement | Rock Climbing")
-	float DownClimbingMontageTime = 2.0f;	
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Character | Movement | Rock Climbing")
-	bool bIsDrawDebugUp = false;	
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Character | Movement | Rock Climbing")
-	bool bIsDrawDebugDonw = false;	
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Character | Movement | Rock Climbing")
-	float UpClimbingOffset = 50.0f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Character | Movement | Rock Climbing")
-	float DownClimbingOffset = 50.0f;
-	
-	UPROPERTY()
-	ALedgePlatform* CurrentLedgeActor;
 	
 protected:
 	TSoftObjectPtr<class AGCBaseCharacter> CachedBaseCharacter;
@@ -178,5 +127,4 @@ protected:
 	//Mantle
 	const FMantlingSetting& GetMantlingSetting(float LedgeHeight) const;
 
-	FTimerHandle ClimbingTimer;
 };

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../GCBaseCharacter.h"
+#include <GameCode/Components/LedgeDetectorComponent.h>
 #include <Components/StaticMeshComponent.h>
 #include "GCBaseCharacterMovementComponent.generated.h"
 
@@ -18,8 +19,6 @@ struct FMantlingMovementParameters
 
 	FVector InitialAnimationLocation = FVector::ZeroVector;
 
-	AActor* PlatformActor;
-	
 	UStaticMeshComponent* PlatformMesh = nullptr;
 	FVector PlatforMeshLocation;
 	
@@ -39,7 +38,6 @@ enum class ECustomMovementMode : uint8
 	CMOVE_Zipline UMETA(DisplayName = "Zipline"),
 	CMOVE_WallRun UMETA(DisplayName = "Wall run"),
 	CMOVE_Slide UMETA(DisplayName = "Slide"),
-	CMOVE_RockClimbing UMETA(DisplayName = "RockClimbing"),
 	CMOVE_Max UMETA(Hidden)
 
 };
@@ -56,14 +54,6 @@ enum class EDetachFromLadderMethod : uint8
 
 UENUM(BlueprintType)
 enum class EDetachFromZiplineMethod : uint8
-{
-	Fall = 0,
-	JumpOff
-
-};
-
-UENUM(BlueprintType)
-enum class EDetachFromRockClimbingMethod : uint8
 {
 	Fall = 0,
 	JumpOff
@@ -148,16 +138,6 @@ public:
 	void EndMantle();
 	bool IsMantling() const;
 	//
-
-	//RickClimbing
-	void AttachToRockClimbing(const FMantlingMovementParameters& RockClimbingParameters);
-	float GetActorToCurrentRockClimbingProjection(const FVector& Location) const;
-	
-	void DetachFromRockClimbing(EDetachFromRockClimbingMethod DetachFromRockClimbingMethod = EDetachFromRockClimbingMethod::Fall);
-	
-	bool IsRockClimbing() const;
-	void StopAnimClimbing();
-	//
 	
 	//Ladder
 	void AttachToLadder(const class ALadder* Ladder);
@@ -218,8 +198,6 @@ protected:
 	void PhysZipline(float DeltaTime, int32 Iterations);
 
 	void PhysWallRun(float DeltaTime, int32 Iterations);
-
-	void PhysRockClimbing(float DeltaTime, int32 Iterations);
 
 	UPROPERTY(Transient, DuplicateTransient)
 	AGCBaseCharacter* BaseCharacterOwner;
@@ -301,13 +279,6 @@ protected:
 	UPROPERTY(Category = "Character Movement: Slide", EditDefaultsOnly, BlueprintReadOnly)
 	UAnimMontage* SlideAnimMontage;
 
-	//RockClimbing
-	UPROPERTY(Category = "Character Movement: RockClimbing", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
-	float RockClimbingOffset = 20.0f;
-	UPROPERTY(Category = "Character Movement: RockClimbing", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
-	float ClimbingTime = 20.0f;
-
-	
 	AGCBaseCharacter* GetBaseCharacterOwner() const;
 
 private:
@@ -321,11 +292,6 @@ private:
 	FTimerHandle MantlingTimer;
 	//
 
-	//RickClimbing
-	FMantlingMovementParameters CurrentRockClimbingParameters;
-	FTimerHandle RockClimbingTimer;
-	FVector NewClimbingCharacterLocation;
-	
 	//Ladder
 	 const ALadder* CurrentLadder = nullptr;
 
