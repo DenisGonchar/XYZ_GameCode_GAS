@@ -36,7 +36,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimingStateChanged, bool)
 DECLARE_DELEGATE_OneParam(FOnInteractableObjectFound, FName)
 
 UCLASS(Abstract,NotBlueprintable)
-class GAMECODE_API AGCBaseCharacter : public ACharacter, public IGenericTeamAgentInterface/*, public ISaveSubsystemInterface, public IAbilitySystemInterface*/
+class GAMECODE_API AGCBaseCharacter : public ACharacter, public IGenericTeamAgentInterface, public ISaveSubsystemInterface, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -64,8 +64,10 @@ public:
 	ULedgeDetectorComponent* GetLedgeDetectorComponent() const { return LedgeDetertorComponent; }
 	UCharacterMoveComponent* GetCharacterMoveComponent() const { return CharacterBaseMoveComponent; }
 
-	//virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override; 
-	//const UGCCharacterAttributeSet* GetGCCharacterAttributeSet() const { return  AttributeSet; }
+	
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override; 
+	const UGCCharacterAttributeSet* GetGCCharacterAttributeSet() const { return  AttributeSet; }
+
 #pragma endregion Component
 	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -374,26 +376,27 @@ protected:
 	int MaxNumberDrones = 3;
 
 #pragma endregion Drone
+	
 #pragma region GameplayAbilities
-	// UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category= "Abilities")
-	// class UGCAbilitySystemComponent* AbilitySystemComponent;
-	//
-	// UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category= "Abilities")
-	// UGCCharacterAttributeSet* AttributeSet;
-	//
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Abilities")
-	// TArray<TSubclassOf<class UGameplayAbility>> Abilities;
-	//
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Abilities")
-	// FGameplayTag SprintAbilityTag;
-	//
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Abilities")
-	// FGameplayTag CrouchAbilityTag;
-	//
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Abilities")
-	// FGameplayTagContainer InitialActiveAbilities;
-	//
-	// bool bAreAbilityAdded;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category= "Abilities")
+	UGCAbilitySystemComponent* AbilitySystemComponent;
+	
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category= "Abilities")
+	UGCCharacterAttributeSet* AttributeSet;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Abilities")
+	TArray<TSubclassOf<class UGameplayAbility>> Abilities;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Abilities")
+	FGameplayTag SprintAbilityTag;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Abilities")
+	FGameplayTag CrouchAbilityTag;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Abilities")
+	FGameplayTagContainer InitialActiveAbilities;
+	
+	bool bAreAbilityAdded;
 #pragma endregion GameplayAbilities
 
 private:
@@ -403,8 +406,10 @@ private:
 	
 	int8 CurrentIndexActiveDrone = 0;
 #pragma endregion Drone
-	
-	//void InintGameplayAbilitySystem(AController* NewController);
+
+#pragma region GameplayAbilities
+	void InitGameplayAbilitySystem(AController* NewController);
+#pragma endregion GameplayAbilities
 	
 	float SingnificanceFunction(USignificanceManager::FManagedObjectInfo* ObjectInfo, const FTransform& ViewPoint);
 	void PostSignificanceFunction(USignificanceManager::FManagedObjectInfo* ObjectInfo, float OldSignificance, float Significance, bool bFinal);

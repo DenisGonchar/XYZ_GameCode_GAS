@@ -9,7 +9,8 @@
 #include "CharacterMovementComponent/GCBaseCharacterMovementComponent.h"
 #include "Components/CharacterComponents/CharacterEquipmentComponent.h"
 #include "Components/CharacterComponents/CharacterAttributeComponent.h"
-#include <Components/CharacterComponents/CharacterInventoryComponent.h>
+#include "Components/CharacterComponents/CharacterInventoryComponent.h"
+#include "AbilitySystemComponent/GCAbilitySystemComponent.h"
 #include "Components/LedgeDetectorComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
@@ -21,6 +22,7 @@
 #include "Inventory/Items/InventoryItem.h"
 #include "GameCodeTypes.h"
 #include "SignificanceManager.h"
+#include "AbilitySystemComponent/AttributeSets/GCCharacterAttributeSet.h"
 #include "Components/CharacterComponents/CharacterHitReactionComponent.h"
 #include "Components/CharacterComponents/CharacterMoveComponent.h"
 #include "Inventory/Items/Powerups/Drone.h"
@@ -54,8 +56,8 @@ AGCBaseCharacter::AGCBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	HealthBarProgressComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarProgressComponent"));
 	HealthBarProgressComponent->SetupAttachment(GetCapsuleComponent());
 
-	//AbilitySystemComponent = CreateDefaultSubobject<UGCAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
-	//AttributeSet = CreateDefaultSubobject<UGCCharacterAttributeSet>(TEXT("AttributeSet"));
+	AbilitySystemComponent = CreateDefaultSubobject<UGCAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AttributeSet = CreateDefaultSubobject<UGCCharacterAttributeSet>(TEXT("AttributeSet"));
 }
 
 void AGCBaseCharacter::BeginPlay()
@@ -122,10 +124,10 @@ float AGCBaseCharacter::InternalTakePointDamage(float Damage, FPointDamageEvent 
 }
 
 
-// UAbilitySystemComponent* AGCBaseCharacter::GetAbilitySystemComponent() const
-// {
-// 	return AbilitySystemComponent;
-// }
+UAbilitySystemComponent* AGCBaseCharacter::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
 
 void AGCBaseCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -143,7 +145,8 @@ void AGCBaseCharacter::PossessedBy(AController* NewController)
 		FGenericTeamId TeamId((uint8)Team);
 		AIController->SetGenericTeamId(TeamId);
 	}
-	//InintGameplayAbilitySystem(NewController);
+	
+	InitGameplayAbilitySystem(NewController);
 	
 }
 
@@ -151,26 +154,15 @@ void AGCBaseCharacter::PossessedBy(AController* NewController)
 
 void AGCBaseCharacter::ChangeCrouchState()
 {
-	// if (/*!GetCharacterMovement()->IsCrouching()*/ !AbilitySystemComponent->IsAbilityActive(CrouchAbilityTag) && !GCBaseCharacterMovementComponent->IsProning() && (GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling()))
-	// {
-	// 	//Crouch();
-	// 	AbilitySystemComponent->TryActivateAbilityWithTag(CrouchAbilityTag);
-	// }
-	// else
-	// {
-	// 	AbilitySystemComponent->TryCancelAbilityWithTag(CrouchAbilityTag);
-	// 	//UnCrouch();
-	// }
-
-	if(!GetCharacterMovement()->IsCrouching())
+	if (!AbilitySystemComponent->IsAbilityActive(CrouchAbilityTag) && !GCBaseCharacterMovementComponent->IsProning() && (GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling()))
 	{
-		Crouch();
+		AbilitySystemComponent->TryActivateAbilityWithTag(CrouchAbilityTag);
 	}
 	else
 	{
-		UnCrouch();
+		AbilitySystemComponent->TryCancelAbilityWithTag(CrouchAbilityTag);
 	}
-	
+
 }
 
 void AGCBaseCharacter::ChangeProneState()
@@ -887,23 +879,23 @@ bool AGCBaseCharacter::CanMove()
 	return !CharacterHitReactionComponent->IsBlockingReactionActive();
 }
 
-// void AGCBaseCharacter::InintGameplayAbilitySystem(AController* NewController)
-// {
-// 	AbilitySystemComponent->InitAbilityActorInfo(NewController, this);
-//
-// 	if (!bAreAbilityAdded)
-// 	{
-// 		for (TSubclassOf<UGameplayAbility>& AbilityClass : Abilities)
-// 		{
-// 			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(AbilityClass));
-// 		}
-// 		
-// 		bAreAbilityAdded = true;
-// 	}
-//
-// 	AbilitySystemComponent->TryActivateAbilitiesByTag(InitialActiveAbilities);
-// 	
-// }
+void AGCBaseCharacter::InitGameplayAbilitySystem(AController* NewController)
+{
+	AbilitySystemComponent->InitAbilityActorInfo(NewController, this);
+
+	if (!bAreAbilityAdded)
+	{
+		for (TSubclassOf<UGameplayAbility>& AbilityClass : Abilities)
+		{
+			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(AbilityClass));
+		}
+		
+		bAreAbilityAdded = true;
+	}
+
+	AbilitySystemComponent->TryActivateAbilitiesByTag(InitialActiveAbilities);
+	
+}
 
 float AGCBaseCharacter::SingnificanceFunction(USignificanceManager::FManagedObjectInfo* ObjectInfo, const FTransform& ViewPoint)
 {
@@ -1050,7 +1042,7 @@ void AGCBaseCharacter::UpdateIkSetting(float DeltaSeconds)
 
 }
 
-//
+
 float AGCBaseCharacter::GetIKOffsetForSocket(const FName& SocketName) const
 {
 	float Result = 0.0f;
@@ -1081,33 +1073,21 @@ float AGCBaseCharacter::CalculateIKPelvisOffset()
 void AGCBaseCharacter::TryChangeSprintState(float DeltaTime)
 {
 	
-	// bool bIsSprintActive = AbilitySystemComponent->IsAbilityActive(SprintAbilityTag);
-	// if (bIsSprintRequested && !bIsSprintActive && CanSprint())
-	// {
-	// 	if (AbilitySystemComponent->TryActivateAbilityWithTag(SprintAbilityTag))
-	// 	{
-	// 		OnSprintStart(); 
-	// 	}
-	//
-	// }
-	// if ( bIsSprintActive && !(bIsSprintRequested && CanSprint()) && GCBaseCharacterMovementComponent->IsSprinting())
-	// {
-	// 	if (AbilitySystemComponent->TryCancelAbilityWithTag(SprintAbilityTag))
-	// 	{
-	// 		OnSprintEnd();
-	// 	}
-	// }
-
-	if (bIsSprintRequested && !GCBaseCharacterMovementComponent->IsSprinting() && CanSprint() || !IsStartFireMeleeWeapon())
+	bool bIsSprintActive = AbilitySystemComponent->IsAbilityActive(SprintAbilityTag);
+	if (bIsSprintRequested && !bIsSprintActive  && CanSprint() /*|| !IsStartFireMeleeWeapon()*/)
 	{
-		GCBaseCharacterMovementComponent->StartSprint();
-		OnSprintStart(); 
-
+		if (AbilitySystemComponent->TryActivateAbilityWithTag(SprintAbilityTag))
+		{		
+			OnSprintStart(); 
+		}
+	
 	}
-	if (!(bIsSprintRequested && CanSprint()) && GCBaseCharacterMovementComponent->IsSprinting() || IsStartFireMeleeWeapon())
+	if ( bIsSprintActive && !(bIsSprintRequested && CanSprint()) && GCBaseCharacterMovementComponent->IsSprinting() || IsStartFireMeleeWeapon())
 	{
-		GCBaseCharacterMovementComponent->StopSprint();
-		OnSprintEnd();
+		if (AbilitySystemComponent->TryCancelAbilityWithTag(SprintAbilityTag))
+		{
+			OnSprintEnd();
+		}
 	}
 	
 }
