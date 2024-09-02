@@ -84,20 +84,3 @@ float UPlayerHUDWidget::GetHealthPercent() const
 
 	return Result;
 }
-
-// float UPlayerHUDWidget::GetStaminaPercent() const
-// {
-// 	float Result = 1.0f;
-// 	
-// 	APawn* Pawn = GetOwningPlayerPawn();
-// 	AGCBaseCharacter* Character = Cast<AGCBaseCharacter>(Pawn);
-// 	if (IsValid(Character))
-// 	{
-// 		const UGCCharacterAttributeSet* AttributeSet = Character->GetGCCharacterAttributeSet();
-// 		Result = AttributeSet->GetStaminaPercent();
-//
-// 	}
-//
-// 	return Result;
-// 	
-// }

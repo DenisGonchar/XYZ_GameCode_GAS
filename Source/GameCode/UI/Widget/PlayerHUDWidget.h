@@ -34,9 +34,6 @@ public:
 protected:
 	UFUNCTION(BlueprintCallable)
 	float GetHealthPercent() const;
-
-	//UFUNCTION(BlueprintCallable)
-	//float GetStaminaPercent() const;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget names")
 	FName ReticleWidgetName;

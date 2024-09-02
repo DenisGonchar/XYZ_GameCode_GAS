@@ -226,34 +226,34 @@ float UCharacterAttributeComponent::GetOxygenPercet() const
 
 void UCharacterAttributeComponent::UpdateStamina(float DeltaTime)
 {
-	if (CurrentStamina <= 0)
-	{
-		//GetBaseCharacterMovementComponent()->SetIsOutOfStamina(true);
-		OutOfStaminaEventSignature.Broadcast(true);
-		OnStartStaminingInternal();
-	}
-	if (CurrentStamina < MaxStamina && !CachedBaseCharacterOwner->GetBaseCharacterMovementComponent()->IsSprinting())
-	{
-		OnStartStaminingInternal();
-		CurrentStamina += StaminaRestoveVelocity * DeltaTime;
-		CurrentStamina = FMath::Clamp(CurrentStamina, 0.0f, MaxStamina);
-		GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Green, FString::Printf(TEXT("Stamina %.2f"), CurrentStamina));
-
-	}
-	if (CachedBaseCharacterOwner->GetBaseCharacterMovementComponent()->IsSprinting() && !CachedBaseCharacterOwner->GetBaseCharacterMovementComponent()->IsOutOfStamina())
-	{
-		OnStartStaminingInternal();
-		CurrentStamina -= SprintStaminaConsumptionVelocity * DeltaTime;
-		CurrentStamina = FMath::Clamp(CurrentStamina, 0.0f, MaxStamina);
-		GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Red, FString::Printf(TEXT("Stamina %.2f"), CurrentStamina));
-
-	}
-	if (FMath::IsNearlyEqual(CurrentStamina, MaxStamina))
-	{
-		//GetBaseCharacterMovementComponent()->SetIsOutOfStamina(false);
-		OutOfStaminaEventSignature.Broadcast(false);
-		OnStopStaminingInternal();
-	}
+	// if (CurrentStamina <= 0)
+	// {
+	// 	//GetBaseCharacterMovementComponent()->SetIsOutOfStamina(true);
+	// 	OutOfStaminaEventSignature.Broadcast(true);
+	// 	OnStartStaminingInternal();
+	// }
+	// if (CurrentStamina < MaxStamina && !CachedBaseCharacterOwner->GetBaseCharacterMovementComponent()->IsSprinting())
+	// {
+	// 	OnStartStaminingInternal();
+	// 	CurrentStamina += StaminaRestoveVelocity * DeltaTime;
+	// 	CurrentStamina = FMath::Clamp(CurrentStamina, 0.0f, MaxStamina);
+	// 	GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Green, FString::Printf(TEXT("Stamina %.2f"), CurrentStamina));
+	//
+	// }
+	// if (CachedBaseCharacterOwner->GetBaseCharacterMovementComponent()->IsSprinting() && !CachedBaseCharacterOwner->GetBaseCharacterMovementComponent()->IsOutOfStamina())
+	// {
+	// 	OnStartStaminingInternal();
+	// 	CurrentStamina -= SprintStaminaConsumptionVelocity * DeltaTime;
+	// 	CurrentStamina = FMath::Clamp(CurrentStamina, 0.0f, MaxStamina);
+	// 	GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Red, FString::Printf(TEXT("Stamina %.2f"), CurrentStamina));
+	//
+	// }
+	// if (FMath::IsNearlyEqual(CurrentStamina, MaxStamina))
+	// {
+	// 	//GetBaseCharacterMovementComponent()->SetIsOutOfStamina(false);
+	// 	OutOfStaminaEventSignature.Broadcast(false);
+	// 	OnStopStaminingInternal();
+	// }
 }
 
 void UCharacterAttributeComponent::UpdateOxygenVolue(float DeltaTime)

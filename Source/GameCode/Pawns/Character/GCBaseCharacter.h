@@ -409,6 +409,7 @@ private:
 
 #pragma region GameplayAbilities
 	void InitGameplayAbilitySystem(AController* NewController);
+	
 #pragma endregion GameplayAbilities
 	
 	float SingnificanceFunction(USignificanceManager::FManagedObjectInfo* ObjectInfo, const FTransform& ViewPoint);

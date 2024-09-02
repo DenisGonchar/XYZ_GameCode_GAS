@@ -2,6 +2,8 @@
 
 
 #include "UI/Widget/CharacterAttributesWidget.h"
+
+#include "AbilitySystemComponent/AttributeSets/GCCharacterAttributeSet.h"
 #include "Pawns/Character/GCBaseCharacter.h"
 #include "Components/CharacterComponents/CharacterAttributeComponent.h"
 
@@ -47,10 +49,9 @@ float UCharacterAttributesWidget::GetStaminaPercent() const
 	AGCBaseCharacter* Character = Cast<AGCBaseCharacter>(Pawn);
 	if (IsValid(Character))
 	{
-		const UCharacterAttributeComponent* CharacterAttributes = Character->GetCharacterAttributeComponent();
+		const UGCCharacterAttributeSet* AttributeSet = Character->GetGCCharacterAttributeSet();
+		Result = AttributeSet->GetStaminaPercent();
 		
-		Result = CharacterAttributes->GetStaminaPercet();
-
 	}
 
 	return Result;
