@@ -169,31 +169,9 @@ void UWeaponBarellComponent::ProcessProjectileHit(AGCProjectile* Projectile, con
 void UWeaponBarellComponent::ProcessHit(const FHitResult& HitResult, const FVector& Direction)
 {
 	AActor* HitActor = HitResult.GetActor();
-
 	if (GetOwner()->HasAuthority() && IsValid(HitActor))
 	{
-		IAbilitySystemInterface* AbilitySystemActor = Cast<IAbilitySystemInterface>(HitActor);
-		if (AbilitySystemActor != nullptr && IsValid(DamageEffectClass))
-		{
-			UGameplayEffect* DamageEffect = DamageEffectClass->GetDefaultObject<UGameplayEffect>();
-			FGameplayEffectContext* DamageEffectContext = new FGameplayEffectContext(GetController(), GetOwner());
-			DamageEffectContext->AddHitResult(HitResult);
-			FGameplayEffectContextHandle DamageEffectContextHandele(DamageEffectContext);
-			FGameplayEffectSpec DamageEffectSpes(DamageEffect, DamageEffectContextHandele);
-
-			DamageEffectSpes.SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Abilities.Attributes.Health")), DamageAmount);
-
-			UAbilitySystemComponent* AbilitySystem = AbilitySystemActor->GetAbilitySystemComponent();
-			AbilitySystem->ApplyGameplayEffectSpecToSelf(DamageEffectSpes);
-		}
-		
-		FPointDamageEvent DamageEvent;
-		DamageEvent.HitInfo = HitResult;
-		DamageEvent.ShotDirection = Direction;
-		DamageEvent.DamageTypeClass = DamageTypeClass;
-
 		float Damage = DamageAmount;
-		
 		ABowWeaponItem* Weapon = Cast<ABowWeaponItem>(GetOwner());
 		if (Weapon && DamageCurve)
 		{
@@ -202,24 +180,35 @@ void UWeaponBarellComponent::ProcessHit(const FHitResult& HitResult, const FVect
 				case EBowstringType::Tension:
 				{
 					Damage = MinDamageAmount;
-						
 					break;
 				}
+
 				case EBowstringType::Hold:
 				{
 					float TimeTimer = Weapon->GetTimeTimerReadyToFire();
-
-						Damage = DamageCurve->GetFloatValue(TimeTimer); 
+					Damage = DamageCurve->GetFloatValue(TimeTimer); 
 					break;
 				}
 			}
+		}
 			
+		IAbilitySystemInterface* AbilitySystemActor = Cast<IAbilitySystemInterface>(HitActor);
+		if (AbilitySystemActor != nullptr && IsValid(	DamageEffectClass))
+		{
+			UGameplayEffect* DamageEffect = DamageEffectClass->GetDefaultObject<UGameplayEffect>();
+			FGameplayEffectContext* DamageEffectContext = new FGameplayEffectContext(GetController(), GetOwner());
+
+			DamageEffectContext->AddHitResult(HitResult);
+			FGameplayEffectContextHandle DamageEffectContextHandle(DamageEffectContext);
+			FGameplayEffectSpec DamageEffectSpec(DamageEffect, DamageEffectContextHandle);
+
+			DamageEffectSpec.SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Abilities.Attributes.Health")), Damage);
+
+			UAbilitySystemComponent* AbilitySystem = AbilitySystemActor->GetAbilitySystemComponent();
+			AbilitySystem->ApplyGameplayEffectSpecToSelf(DamageEffectSpec);
 		}
 		
-
-		HitActor->TakeDamage(Damage, DamageEvent, GetController(), GetOwner());
 		
-
 	}
 
 	UDecalComponent* DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DefaultDecalInfo.DecalMaterial, DefaultDecalInfo.DecalSize, HitResult.ImpactPoint, HitResult.ImpactNormal.ToOrientationRotator());

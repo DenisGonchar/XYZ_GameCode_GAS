@@ -18,7 +18,7 @@ class GAMECODE_API UGCAttributeProgressBar : public UUserWidget
 public:
 	void SetProgressPercantage(float Percentage);
 
-	void SetAttibuteSet(UGCCharacterAttributeSet* AttributeSet_In);
+	void SetAttributeSet(UGCCharacterAttributeSet* AttributeSet_In);
 
 	UFUNCTION(BlueprintCallable)
 	float GetHealthPercent() const;

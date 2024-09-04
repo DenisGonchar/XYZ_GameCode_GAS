@@ -4,7 +4,6 @@
 #include "DamageEffectExecutionCalculation.h"
 
 #include "AbilitySystemComponent.h"
-#include "ParticleHelper.h"
 #include "AbilitySystemComponent/AttributeSets/GCCharacterAttributeSet.h"
 
 
@@ -66,7 +65,7 @@ void UDamageEffectExecutionCalculation::Execute_Implementation(
 	float TotalDamage = FMath::Max<float>(0.0f, Damage - Defence);
 	if (TotalDamage > 0.0f)
 	{
-		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().HealthProperty, EGameplayModOp::Additive, -TotalDamage));
+		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().HealthProperty, EGameplayModOp::Additive, -Damage));
 		
 	}
 

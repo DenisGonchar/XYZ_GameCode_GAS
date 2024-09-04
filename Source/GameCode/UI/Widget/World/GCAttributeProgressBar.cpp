@@ -11,7 +11,7 @@ void UGCAttributeProgressBar::SetProgressPercantage(float Percentage)
 	HealthProgressBar->SetPercent(Percentage);
 }
 
-void UGCAttributeProgressBar::SetAttibuteSet(UGCCharacterAttributeSet* AttributeSet_In)
+void UGCAttributeProgressBar::SetAttributeSet(UGCCharacterAttributeSet* AttributeSet_In)
 {
 	AttributeSet = AttributeSet_In;
 }
@@ -21,7 +21,7 @@ float UGCAttributeProgressBar::GetHealthPercent() const
 	float Result = 0.0f;
 	if (AttributeSet.IsValid())
 	{
-	 Result = AttributeSet->GetHealthPercent();
+		Result = AttributeSet->GetHealthPercent();
 		
 	}
 	return Result;

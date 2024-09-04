@@ -763,9 +763,8 @@ void AGCBaseCharacter::InitializeHealthProgress()
 		HealthBarProgressComponent->SetVisibility(false);
 	}
 
-	//Widget->SetAttibuteSet(AttributeSet);
+	Widget->SetAttributeSet(AttributeSet);
 
-	
 }
 
 void AGCBaseCharacter::ConfirmWeaponSelection()
