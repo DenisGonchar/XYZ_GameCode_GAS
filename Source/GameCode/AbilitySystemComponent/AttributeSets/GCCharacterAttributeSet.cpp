@@ -9,7 +9,7 @@ void UGCCharacterAttributeSet::PreAttributeChange(const FGameplayAttribute& Attr
 {
 	Super::PreAttributeChange(Attribute, NewValue);
 
-	if (Attribute.AttributeName == FString("String"))
+	if (Attribute.AttributeName == FString("Stamina"))
 	{
 		NewValue = FMath:: Clamp(NewValue, 0.0f, MaxStamina.GetCurrentValue());
 	}
@@ -25,7 +25,7 @@ void UGCCharacterAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& 
 {
 	Super::PreAttributeBaseChange(Attribute, NewValue);
 
-	if (Attribute.AttributeName == FString("String"))
+	if (Attribute.AttributeName == FString("Stamina"))
 	{
 		NewValue = FMath:: Clamp(NewValue, 0.0f, MaxStamina.GetBaseValue());
 	}
