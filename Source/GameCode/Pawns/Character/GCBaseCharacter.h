@@ -269,6 +269,8 @@ public:
 	float IKInterpSpeed = 20.0f;
 #pragma endregion IKSocket
 
+	void Die();
+	
 protected:
 	virtual void OnDeath();
 
@@ -394,7 +396,7 @@ protected:
 	FGameplayTag CrouchAbilityTag;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Abilities")
-	FGameplayTagContainer InitialActiveAbilities;
+	TArray<FGameplayTagContainer> InitialActiveAbilities;
 	
 	bool bAreAbilityAdded;
 #pragma endregion GameplayAbilities

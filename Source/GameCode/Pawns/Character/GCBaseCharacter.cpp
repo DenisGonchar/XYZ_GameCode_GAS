@@ -785,6 +785,12 @@ FGenericTeamId AGCBaseCharacter::GetGenericTeamId() const
 	return FGenericTeamId((uint8)Team);
 }
 
+void AGCBaseCharacter::Die()
+{
+	OnDeath();
+	
+}
+
 void AGCBaseCharacter::OnDeath()
 {
 	GetCharacterMovement()->DisableMovement();
@@ -892,7 +898,11 @@ void AGCBaseCharacter::InitGameplayAbilitySystem(AController* NewController)
 		bAreAbilityAdded = true;
 	}
 
-	AbilitySystemComponent->TryActivateAbilitiesByTag(InitialActiveAbilities);
+	for (const FGameplayTagContainer& AbilityTag : InitialActiveAbilities)
+	{
+		AbilitySystemComponent->TryActivateAbilitiesByTag(AbilityTag);
+	}
+	
 	
 }
 

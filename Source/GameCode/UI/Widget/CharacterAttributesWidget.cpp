@@ -31,10 +31,9 @@ float UCharacterAttributesWidget::GetHealthPercent() const
 	AGCBaseCharacter* Character = Cast<AGCBaseCharacter>(Pawn);
 	if (IsValid(Character))
 	{
-		const UCharacterAttributeComponent* CharacterAttributes = Character->GetCharacterAttributeComponent();
-
-		Result = CharacterAttributes->GetHealthPercet();
-
+		const UGCCharacterAttributeSet* AttributeSet = Character->GetGCCharacterAttributeSet();
+		
+		Result = AttributeSet->GetHealthPercent();
 	}
 
 	return Result;
